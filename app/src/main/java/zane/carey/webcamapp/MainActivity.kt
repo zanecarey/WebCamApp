@@ -37,5 +37,16 @@ class MainActivity : AppCompatActivity(){
                 Toast.makeText(this@MainActivity, categoryChoice, Toast.LENGTH_SHORT).show()
             }
         }
+
+        countrySpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, countries)
+        countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                countryChoice = parent?.getItemAtPosition(position).toString()
+                Toast.makeText(this@MainActivity, countryChoice, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
