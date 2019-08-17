@@ -1,3 +1,3 @@
 package zane.carey.webcamapp
 
-class WebCam(val id: Int, val title: String, val thumbPic: String)
+class WebCam(val id: String, val title: String, val thumbPic: String)
