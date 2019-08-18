@@ -28,6 +28,7 @@ class RecyclerAdapter(val cams: ArrayList<WebCam>, val context: Context) : Recyc
         p0.cardView.setOnClickListener{
             val intent = Intent(context, CamDisplayActivity::class.java)
             intent.putExtra("camID", cams[p1].id)
+            context.startActivity(intent)
         }
     }
 

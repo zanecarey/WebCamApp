@@ -18,7 +18,7 @@ class RestApi {
         camApi = retrofit.create(WebCamInteface::class.java)
     }
 
-    fun getCams() : Deferred<Result> {
-        return camApi.getCamResults()
+    fun getCams(country: String, category: String) : Deferred<Result> {
+        return camApi.getCamResults(country, category)
     }
 }

@@ -15,10 +15,10 @@ import kotlinx.coroutines.*
 
 val api = RestApi()
 
-var categories = arrayOf("Category", "Beach", "Coast", "Forest", "Island", "Lake", "Mountain")
-var countries = arrayOf("Country", "USA", "Canada")
-var categoryChoice = "Category"
-var countryChoice = "Country"
+var categories = arrayOf("Beach", "Coast", "Forest", "Island", "Lake", "Mountain")
+var countries = arrayOf("IT", "DE")
+var categoryChoice = "Beach"
+var countryChoice = "IT"
 
 private var cams = ArrayList<WebCam>()
 
@@ -66,30 +66,24 @@ class MainActivity : AppCompatActivity() {
 
         //Search Card View Listener
         searchCardView.setOnClickListener {
-            getInfo()
+            getInfo(countryChoice, categoryChoice)
         }
 
     }
 
-    fun getInfo() = runBlocking<Unit> {
+    fun getInfo(country: String, category: String) = runBlocking<Unit> {
         val job = CoroutineScope(Dispatchers.Main).launch {
-            val request = api.getCams().await()
+            val request = api.getCams(country, category).await()
             val response = request.result
-            cams.add(
-                WebCam(
-                    response[0].webcams[0].id,
-                    response[0].webcams[0].title,
-                    response[0].webcams[0].image.current.thumbPic
+            for(i in response.webcams.indices) {
+                cams.add(
+                    WebCam(
+                        response.webcams[i].id,
+                        response.webcams[i].title,
+                        response.webcams[i].image.current.thumbPic
+                    )
                 )
-            )
-            cams.add(
-                WebCam(
-                    response[1].webcams[1].id,
-                    response[1].webcams[1].title,
-                    response[1].webcams[1].image.current.thumbPic
-                )
-            )
-
+            }
             withContext(Dispatchers.Main) {
 
                 adapter = RecyclerAdapter(cams, this@MainActivity)
@@ -98,6 +92,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
