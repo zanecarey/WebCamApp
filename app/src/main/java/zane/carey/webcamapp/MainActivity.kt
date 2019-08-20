@@ -16,9 +16,14 @@ import kotlinx.coroutines.*
 val api = RestApi()
 
 var categories = arrayOf("Beach", "Coast", "Forest", "Island", "Lake", "Mountain")
-var countries = arrayOf("IT", "DE")
+var countries = arrayOf("Canada" , "France", "Germany" ,  "Great Britain" , "Greece" , "Hungary" , "Italy" , "USA"  , "Spain" )
+var usRegionCodes = arrayOf("US.AL", "US.AK", "US.AK", "US.AZ", "US.AR", "US.CA")
+var usRegions = arrayOf("Alabama", "Alaska", "Arizona", "Arkansas", "California")
+var canadaRegions = arrayOf("Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Northwest Territories", "Nunavut")
+var franceRegions = arrayOf("Île-de-France Region", "Centre-Val de Loire", "Bourgogne-Franche-Comté", "Normandy", "Hauts-de-France", "Grand Est", "Pays de la Loire Region", " Brittany Region", "Nouvelle-Aquitaine", "Occitanie", "Auvergne-Rhône-Alpes", "Provence-Alpes-Côte d'Azur Region", "Corsica")
 var categoryChoice = "Beach"
-var countryChoice = "IT"
+var countryChoice = "CA"
+var regionChoice = "AL"
 
 private var cams = ArrayList<WebCam>()
 
@@ -40,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         //SPINNER STUFF
         val catSpinner = findViewById(R.id.categorySpinner) as Spinner
         val countrySpinner = findViewById(R.id.countrySpinner) as Spinner
+        val regionSpinner = findViewById(R.id.regionSpinner) as Spinner
 
         catSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
         catSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -48,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 categoryChoice = parent?.getItemAtPosition(position).toString()
-                Toast.makeText(this@MainActivity, categoryChoice, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -59,21 +64,35 @@ class MainActivity : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 countryChoice = parent?.getItemAtPosition(position).toString()
-                Toast.makeText(this@MainActivity, countryChoice, Toast.LENGTH_SHORT).show()
+
+                when(countryChoice) {
+                    "Canada" -> regionSpinner.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, canadaRegions)
+                    "France" -> regionSpinner.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, franceRegions)
+                }
             }
         }
 
+        regionSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, canadaRegions)
+        regionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                regionChoice = parent?.getItemAtPosition(position).toString()
+            }
+        }
 
         //Search Card View Listener
         searchCardView.setOnClickListener {
-            getInfo(countryChoice, categoryChoice)
+            val regionCode = getRegionCode(regionChoice)
+            getInfo(regionCode, categoryChoice)
         }
 
     }
 
-    fun getInfo(country: String, category: String) = runBlocking<Unit> {
+    fun getInfo(region: String, category: String) = runBlocking<Unit> {
         val job = CoroutineScope(Dispatchers.Main).launch {
-            val request = api.getCams(country, category).await()
+            val request = api.getCams(region, category).await()
             val response = request.result
             for(i in response.webcams.indices) {
                 cams.add(
@@ -90,6 +109,17 @@ class MainActivity : AppCompatActivity() {
                 camRecyclerView.adapter = adapter
                 camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
             }
+        }
+    }
+
+    fun getRegionCode(regionChoice: String): String {
+        when (regionChoice) {
+            "Alabama" -> return "US.AL"
+            "Alaska" -> return "US.AK"
+            "Arizona" -> return "US.AZ"
+            "Arkansas" -> return "US.AR"
+            "California" -> return "US.CA"
+            else -> return "US.TX"
         }
     }
 }

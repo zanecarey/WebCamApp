@@ -6,7 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RestApi {
-    private val camApi: WebCamInteface
+    private val camApi: WebCamInterface
+    private val idApi: CamIDInterface
 
     init {
         val retrofit = Retrofit.Builder()
@@ -15,10 +16,15 @@ class RestApi {
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
 
-        camApi = retrofit.create(WebCamInteface::class.java)
+        camApi = retrofit.create(WebCamInterface::class.java)
+        idApi = retrofit.create(CamIDInterface::class.java)
     }
 
-    fun getCams(country: String, category: String) : Deferred<Result> {
-        return camApi.getCamResults(country, category)
+    fun getCams(region: String, category: String) : Deferred<Result> {
+        return camApi.getCamResults(region, category)
+    }
+
+    fun getCamInfo(webcamID: String): Deferred<Result> {
+        return idApi.getCamWithID(webcamID)
     }
 }
