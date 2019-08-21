@@ -17,8 +17,7 @@ val api = RestApi()
 
 var categories = arrayOf("Beach", "Coast", "Forest", "Island", "Lake", "Mountain")
 var countries = arrayOf("Canada" , "France", "Germany" ,  "Great Britain" , "Greece" , "Hungary" , "Italy" , "USA"  , "Spain" )
-var usRegionCodes = arrayOf("US.AL", "US.AK", "US.AK", "US.AZ", "US.AR", "US.CA")
-var usRegions = arrayOf("Alabama", "Alaska", "Arizona", "Arkansas", "California")
+var usRegions = arrayOf("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Texas")
 var canadaRegions = arrayOf("Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Northwest Territories", "Nunavut")
 var franceRegions = arrayOf("Île-de-France Region", "Centre-Val de Loire", "Bourgogne-Franche-Comté", "Normandy", "Hauts-de-France", "Grand Est", "Pays de la Loire Region", " Brittany Region", "Nouvelle-Aquitaine", "Occitanie", "Auvergne-Rhône-Alpes", "Provence-Alpes-Côte d'Azur Region", "Corsica")
 var categoryChoice = "Beach"
@@ -68,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                 when(countryChoice) {
                     "Canada" -> regionSpinner.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, canadaRegions)
                     "France" -> regionSpinner.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, franceRegions)
+                    "USA" -> regionSpinner.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, usRegions)
                 }
             }
         }
@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity() {
             "Arizona" -> return "US.AZ"
             "Arkansas" -> return "US.AR"
             "California" -> return "US.CA"
+            "Texas" -> return "US.TX"
             else -> return "US.TX"
         }
     }

@@ -2,11 +2,19 @@ package zane.carey.webcamapp
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 import okhttp3.Dispatcher
+import android.net.http.SslError
+import android.webkit.SslErrorHandler
+
+
 
 lateinit var camTitle: TextView
 lateinit var camPic: ImageView
@@ -15,6 +23,8 @@ lateinit var cityTextView: TextView
 lateinit var regionTextView: TextView
 lateinit var latitudeTextView: TextView
 lateinit var longitudeTextView: TextView
+lateinit var embedWebView: WebView
+var embedLink = ""
 
 class CamDisplayActivity : AppCompatActivity() {
 
@@ -29,10 +39,20 @@ class CamDisplayActivity : AppCompatActivity() {
         regionTextView = findViewById(R.id.regionTextView)
         latitudeTextView = findViewById(R.id.latitudeTextView)
         longitudeTextView = findViewById(R.id.longitudeTextView)
+        embedWebView = findViewById(R.id.embedWebView)
+
+        embedWebView.settings.javaScriptEnabled = true
+        embedWebView.webViewClient = MyWebViewClient()
 
         val camID = getCamID()
 
         retreiveInfo(camID)
+
+        camPic.setOnClickListener {
+            startCamFeed()
+        }
+
+
     }
 
     fun getCamID(): String {
@@ -58,7 +78,32 @@ class CamDisplayActivity : AppCompatActivity() {
                 regionTextView.text = response.location.region
                 latitudeTextView.text = response.location.latitude.toString()
                 longitudeTextView.text = response.location.longitude.toString()
+                embedLink = response.player.live.embed
             }
+        }
+    }
+
+    fun startCamFeed() {
+//        embedWebView!!.webViewClient = object : WebViewClient() {
+//            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+//                view?.loadUrl(url)
+//                return true
+//            }
+//        }
+        //embedWebView!!.loadUrl(embedLink)
+        embedWebView!!.loadUrl("http://www.google.com")
+    }
+
+    private class MyWebViewClient : WebViewClient() {
+
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+
+            return false
+
+        }
+
+        override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+            handler.proceed() // Ignore SSL certificate errors
         }
     }
 }
