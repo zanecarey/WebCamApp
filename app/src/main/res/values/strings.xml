@@ -1,3 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WebCamApp</string>
+
+    <string-array name="countries_list">
+        <item>Australia</item>
+        <item>Austria</item>
+        <item>Canada</item>
+        <item>Finland</item>
+        <item>France</item>
+        <item>Germany</item>
+        <item>Great Britain</item>
+        <item>Japan</item>
+        <item>New Zealand</item>
+        <item>Poland</item>
+        <item>Russia</item>
+        <item>Spain</item>
+        <item>Sweden</item>
+        <item>Switzerland</item>
+        <item>USA</item>
+    </string-array>
+
+    <string-array name="australiaRegions">
+        <item>Queensland</item>
+        <item>Victoria</item>
+        <item>New South Wales</item>
+    </string-array>
+
+    <string-array name="austriaRegions">
+        <item>Carinthia</item>
+        <item>Lower Austria</item>
+        <item>Upper Austria</item>
+        <item>Salzburg</item>
+        <item>Styria</item>
+        <item>Tyrol</item>
+        <item>Voralberg</item>
+        <item>Vienna</item>
+    </string-array>
+
+
+
+
+    <string-array name="canadaRegions">
+        <item>British Columbia</item>
+        <item>Nova Scotia</item>
+        <item>Ontario</item>
+    </string-array>
+
+    <string-array name="finlandRegions">
+        <item>Newland</item>
+        <item>Pirkanmaa</item>
+        <item>Kymenlaakso</item>
+        <item>North Savo</item>
+        <item>North Ostrobothnia</item>
+        <item>Lapland</item>
+    </string-array>
+
+    <string-array name="franceRegions">
+        <item>Brittany Region</item>
+        <item>Nouvelle-Aquitaine</item>
+        <item>Occitanie</item>
+        <item>Auvergne-Rhône-Alpes</item>
+        <item>Provence-Alpes-Côte d\'Azur Region</item>
+    </string-array>
+
+    <string-array name="britainRegions">
+        <item>England</item>
+        <item>Scotland</item>
+        <item>Wales</item>
+    </string-array>
+
+    <string-array name="germanyRegions">
+        <item>Baden-Württemberg</item>
+        <item>Bavaria</item>
+        <item>Hesse</item>
+        <item>North Rhine-Westphalia</item>
+        <item>Schleswig-Holstein</item>
+    </string-array>
+
+    <string-array name="japanRegions">
+        <item>Nagano</item>
+        <item>Tokyo</item>
+    </string-array>
+
+    <string-array name="newzealandRegions">
+        <item>Auckland</item>
+        <item>Canterbury</item>
+    </string-array>
+
+    <string-array name="polandRegions">
+        <item>Lower Silesia</item>
+        <item>Pomerania</item>
+        <item>Silesia</item>
+    </string-array>
+
+    <string-array name="russiaRegions">
+        <item>Stavropol Kray</item>
+    </string-array>
+
+    <string-array name="spainRegions">
+        <item>Canary Islands</item>
+        <item>Catalonia</item>
+        <item>Valencia</item>
+    </string-array>
+
+    <string-array name="swedenRegions">
+        <item>Stockholm</item>
+        <item>Västra Götaland County</item>
+    </string-array>
+
+    <string-array name="switzerlandRegions">
+        <item>Canton of Bern</item>
+        <item>Canton Grisons</item>
+        <item>Vaud</item>
+        <item>Valais</item>
+        <item>Zurich</item>
+    </string-array>
+
+    <string-array name="usaRegions">
+        <item>Arizona</item>
+        <item>California</item>
+        <item>Florida</item>
+        <item>New York</item>
+        <item>Oregon</item>
+        <item>Texas</item>
+        <item>Utah</item>
+        <item>Washington</item>
+    </string-array>
 </resources>

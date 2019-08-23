@@ -71,7 +71,7 @@ class CamDisplayActivity : AppCompatActivity() {
                 camTitle.text = response.title
                 Glide.with(this@CamDisplayActivity)
                     .asBitmap()
-                    .load(response.image.current.thumbPic)
+                    .load(response.image.current.previewPic)
                     .into(camPic)
                 countryTextView.text = response.location.country
                 cityTextView.text = response.location.city
@@ -91,7 +91,7 @@ class CamDisplayActivity : AppCompatActivity() {
 //            }
 //        }
         //embedWebView!!.loadUrl(embedLink)
-        embedWebView!!.loadUrl("http://www.google.com")
+        embedWebView!!.loadUrl("http://www.mlb.com")
     }
 
     private class MyWebViewClient : WebViewClient() {

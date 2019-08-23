@@ -57,7 +57,9 @@ data class Image(
 
 data class Current(
     @SerializedName("thumbnail")
-    val thumbPic: String
+    val thumbPic: String,
+    @SerializedName("preview")
+    val previewPic: String
 )
 
 data class Location(
