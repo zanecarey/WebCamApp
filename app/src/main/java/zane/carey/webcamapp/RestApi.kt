@@ -20,8 +20,8 @@ class RestApi {
         idApi = retrofit.create(CamIDInterface::class.java)
     }
 
-    fun getCams(region: String, category: String) : Deferred<Result> {
-        return camApi.getCamResults(region, category)
+    fun getCams(areaType: String, region: String, category: String, property: String) : Deferred<Result> {
+        return camApi.getCamResults(areaType, region, category, property)
     }
 
     fun getCamInfo(webcamID: String): Deferred<Result> {

@@ -90,8 +90,7 @@ class CamDisplayActivity : AppCompatActivity() {
 //                return true
 //            }
 //        }
-        //embedWebView!!.loadUrl(embedLink)
-        embedWebView!!.loadUrl("http://www.mlb.com")
+        embedWebView!!.loadUrl(embedLink)
     }
 
     private class MyWebViewClient : WebViewClient() {

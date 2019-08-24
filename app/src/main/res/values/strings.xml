@@ -2,6 +2,36 @@
 <resources>
     <string name="app_name">WebCamApp</string>
 
+    <string-array name="categories">
+        <item>Airport</item>
+        <item>Area</item>
+        <item>Bay</item>
+        <item>Beach</item>
+        <item>Building</item>
+        <item>Camping</item>
+        <item>City</item>
+        <item>Coast</item>
+        <item>Forest</item>
+        <item>Golf Course</item>
+        <item>Harbor</item>
+        <item>Resort</item>
+        <item>Island</item>
+        <item>Lake/River</item>
+        <item>Marketplace</item>
+        <item>Mountain/Canyon</item>
+        <item>Other</item>
+        <item>Outdoor</item>
+        <item>Park</item>
+        <item>Pool</item>
+        <item>Indoor</item>
+        <item>Sky</item>
+        <item>Arena</item>
+        <item>Square</item>
+        <item>Street/Traffic</item>
+        <item>Underwater</item>
+        <item>Water</item>
+    </string-array>
+
     <string-array name="countries_list">
         <item>Australia</item>
         <item>Austria</item>
