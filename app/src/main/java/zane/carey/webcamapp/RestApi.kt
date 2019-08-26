@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RestApi {
     private val camApi: WebCamInterface
     private val idApi: CamIDInterface
+    private val gpsApi: GPSInterface
 
     init {
         val retrofit = Retrofit.Builder()
@@ -18,6 +19,7 @@ class RestApi {
 
         camApi = retrofit.create(WebCamInterface::class.java)
         idApi = retrofit.create(CamIDInterface::class.java)
+        gpsApi = retrofit.create(GPSInterface::class.java)
     }
 
     fun getCams(areaType: String, region: String, category: String, property: String) : Deferred<Result> {
@@ -26,5 +28,9 @@ class RestApi {
 
     fun getCamInfo(webcamID: String): Deferred<Result> {
         return idApi.getCamWithID(webcamID)
+    }
+
+    fun getNearbyCams(latitude: Double, longitude: Double, radius: Int) : Deferred<Result> {
+        return gpsApi.getNearbyCams(latitude,longitude,radius)
     }
 }

@@ -42,6 +42,8 @@ class CamDisplayActivity : AppCompatActivity() {
         embedWebView = findViewById(R.id.embedWebView)
 
         embedWebView.settings.javaScriptEnabled = true
+        embedWebView.settings.domStorageEnabled = true
+        embedWebView.settings.setAppCacheEnabled(true)
         embedWebView.webViewClient = MyWebViewClient()
 
         val camID = getCamID()
@@ -90,14 +92,16 @@ class CamDisplayActivity : AppCompatActivity() {
 //                return true
 //            }
 //        }
-        embedWebView!!.loadUrl(embedLink)
+        //embedWebView!!.loadUrl(embedLink)
+        embedWebView!!.loadUrl("https://www.lookr.com/lookout/1485691420#action-play-day")
     }
 
     private class MyWebViewClient : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
 
-            return false
+            embedWebView.loadUrl(url)
+            return true
 
         }
 

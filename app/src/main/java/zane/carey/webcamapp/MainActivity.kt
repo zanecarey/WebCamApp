@@ -1,9 +1,16 @@
 package zane.carey.webcamapp
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
@@ -11,6 +18,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
@@ -23,10 +32,15 @@ var regionChoice = "AU.04"
 var property = "hd"
 private var cams = ArrayList<WebCam>()
 
+var latitude: Double = 0.0
+var longitude: Double = 0.0
+var radius: Int = 50
+
 private lateinit var adapter: RecyclerAdapter
 private lateinit var camRecyclerView: RecyclerView
+private lateinit var fab: FloatingActionButton
 
-
+private lateinit var fusedLocationClient: FusedLocationProviderClient
 class MainActivity : AppCompatActivity() {
 
 
@@ -37,160 +51,215 @@ class MainActivity : AppCompatActivity() {
         val context = this
         val res: Resources = resources
 
-        val searchCardView = findViewById(R.id.searchCardView) as CardView
-        camRecyclerView = findViewById(R.id.resultsRecyclerView) as RecyclerView
-        val catSpinner = findViewById(R.id.categorySpinner) as Spinner
-        val countrySpinner = findViewById(R.id.countrySpinner) as Spinner
-        val regionSpinner = findViewById(R.id.regionSpinner) as Spinner
-
-        val livestreamSwitch = findViewById(R.id.livestreamSwitch) as Switch
-        val hdSwitch = findViewById(R.id.hdSwitch) as Switch
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
+        } else {
 
 
+            val searchCardView = findViewById(R.id.searchCardView) as CardView
+            camRecyclerView = findViewById(R.id.resultsRecyclerView) as RecyclerView
+            val catSpinner = findViewById(R.id.categorySpinner) as Spinner
+            val countrySpinner = findViewById(R.id.countrySpinner) as Spinner
+            val regionSpinner = findViewById(R.id.regionSpinner) as Spinner
 
-        catSpinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, resources.getStringArray(R.array.categories))
-        catSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+            val livestreamSwitch = findViewById(R.id.livestreamSwitch) as Switch
+            val hdSwitch = findViewById(R.id.hdSwitch) as Switch
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                categoryChoice = parent?.getItemAtPosition(position).toString()
-            }
-        }
+            fab = findViewById(R.id.floatingActionButton) as FloatingActionButton
 
-        countrySpinner.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            resources.getStringArray(R.array.countries_list)
-        )
-        countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            obtainLocation()
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                countryChoice = parent?.getItemAtPosition(position).toString()
+            fab.setOnClickListener {
+                try {
+                    obtainLocation()
+                    Toast.makeText(
+                        this@MainActivity,
+                        latitude.toString() + longitude.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                when (countryChoice) {
-                    "Australia" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.australiaRegions)
-                    )
-                    "Austria" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.austriaRegions)
-                    )
-                    "Canada" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.canadaRegions)
-                    )
-                    "Finland" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.finlandRegions)
-                    )
-                    "France" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.franceRegions)
-                    )
-                    "Great Britain" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.britainRegions)
-                    )
-                    "Germany" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.germanyRegions)
-                    )
-                    "Japan" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.japanRegions)
-                    )
-                    "New Zealand" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.newzealandRegions)
-                    )
-                    "Poland" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.polandRegions)
-                    )
-                    "Russia" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.russiaRegions)
-                    )
-                    "Spain" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.spainRegions)
-                    )
-                    "Sweden" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.swedenRegions)
-                    )
-                    "Switzerland" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.switzerlandRegions)
-                    )
-                    "USA" -> regionSpinner.adapter = ArrayAdapter(
-                        this@MainActivity,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        resources.getStringArray(R.array.usaRegions)
-                    )
+                    //get cams
+                    val job = CoroutineScope(Dispatchers.Main).launch {
+                        val request = api.getNearbyCams(latitude, longitude, radius).await()
+                        val response = request.result
+
+                        if (response.webcams.isEmpty()) {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "No results using these filters",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            for (i in response.webcams.indices) {
+                                cams.add(
+                                    WebCam(
+                                        response.webcams[i].id,
+                                        response.webcams[i].title,
+                                        response.webcams[i].image.current.thumbPic
+                                    )
+                                )
+                            }
+                            withContext(Dispatchers.Main) {
+
+                                adapter = RecyclerAdapter(cams, this@MainActivity)
+                                camRecyclerView.adapter = adapter
+                                camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                            }
+                        }
+                    }
+                } catch (ex: SecurityException) {
+
                 }
             }
-        }
 
-        regionSpinner.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            resources.getStringArray(R.array.canadaRegions)
-        )
-        regionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+            catSpinner.adapter =
+                ArrayAdapter(
+                    this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    resources.getStringArray(R.array.categories)
+                )
+            catSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    categoryChoice = parent?.getItemAtPosition(position).toString()
+                }
             }
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                regionChoice = parent?.getItemAtPosition(position).toString()
+            countrySpinner.adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                resources.getStringArray(R.array.countries_list)
+            )
+            countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    countryChoice = parent?.getItemAtPosition(position).toString()
+
+                    when (countryChoice) {
+                        "Australia" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.australiaRegions)
+                        )
+                        "Austria" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.austriaRegions)
+                        )
+                        "Canada" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.canadaRegions)
+                        )
+                        "Finland" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.finlandRegions)
+                        )
+                        "France" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.franceRegions)
+                        )
+                        "Great Britain" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.britainRegions)
+                        )
+                        "Germany" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.germanyRegions)
+                        )
+                        "Japan" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.japanRegions)
+                        )
+                        "New Zealand" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.newzealandRegions)
+                        )
+                        "Poland" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.polandRegions)
+                        )
+                        "Russia" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.russiaRegions)
+                        )
+                        "Spain" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.spainRegions)
+                        )
+                        "Sweden" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.swedenRegions)
+                        )
+                        "Switzerland" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.switzerlandRegions)
+                        )
+                        "USA" -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.usaRegions)
+                        )
+                    }
+                }
+            }
+
+            regionSpinner.adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                resources.getStringArray(R.array.canadaRegions)
+            )
+            regionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    regionChoice = parent?.getItemAtPosition(position).toString()
+                }
+            }
+
+            //Search Card View Listener
+            searchCardView.setOnClickListener {
+                if (livestreamSwitch.isChecked) {
+                    property = "live"
+                } else {
+                    property = "hd"
+                }
+                val regionCode = getRegionCode(regionChoice)
+                getInfo(regionCode, categoryChoice)
             }
         }
-
-        //Search Card View Listener
-        searchCardView.setOnClickListener {
-            if(livestreamSwitch.isChecked){
-                property = "live"
-            } else {
-                property = "hd"
-            }
-            val regionCode = getRegionCode(regionChoice)
-            getInfo(regionCode, categoryChoice)
-        }
-
     }
 
     fun getInfo(region: String, category: String) = runBlocking<Unit> {
@@ -222,6 +291,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     fun getRegionCode(regionChoice: String): String {
         when (regionChoice) {
@@ -301,5 +372,33 @@ class MainActivity : AppCompatActivity() {
             "Washington" -> return "US.WA"
             else -> return "US.AL"
         }
+    }
+
+    private val locationListener: LocationListener = object : LocationListener{
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        }
+
+        override fun onProviderEnabled(provider: String?) {
+        }
+
+        override fun onProviderDisabled(provider: String?) {
+        }
+
+        override fun onLocationChanged(location: Location?) {
+            latitude = location!!.latitude
+            longitude = location!!.longitude
+            Toast.makeText(
+                this@MainActivity,
+                latitude.toString() + longitude.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun obtainLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                latitude = location!!.latitude
+                longitude = location!!.longitude}
     }
 }

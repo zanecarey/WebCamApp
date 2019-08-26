@@ -15,7 +15,11 @@ interface WebCamInterface {
         "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
     @GET("/webcams/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage")
-    fun getCamResults(@Path("areaType") areaType: String, @Path("region") region: String, @Path("category") category: String, @Path("property") property: String): Deferred<Result>
+    fun getCamResults(
+        @Path("areaType") areaType: String, @Path("region") region: String, @Path("category") category: String, @Path(
+            "property"
+        ) property: String
+    ): Deferred<Result>
 }
 
 interface CamIDInterface {
@@ -26,6 +30,16 @@ interface CamIDInterface {
     )
     @GET("/webcams/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer")
     fun getCamWithID(@Path("webcamID") webcamID: String): Deferred<Result>
+}
+
+interface GPSInterface {
+    @Headers(
+        "Content-Type: application/json",
+        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
+        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+    )
+    @GET("/webcams/list/nearby={latitude}%2C{longitude}%2C{radius}?lang=en&show=webcams%3Aimage")
+    fun getNearbyCams(@Path("latitude") latitude: Double, @Path("longitude") longitude: Double, @Path("radius") radius: Int): Deferred<Result>
 }
 data class Result(
     @SerializedName("result")
@@ -52,10 +66,19 @@ data class WebCamInfo(
 
 data class Image(
     @SerializedName("current")
-    val current: Current
+    val current: Current,
+    @SerializedName("daylight")
+    val daylight: Daylight
 )
 
 data class Current(
+    @SerializedName("thumbnail")
+    val thumbPic: String,
+    @SerializedName("preview")
+    val previewPic: String
+)
+
+data class Daylight(
     @SerializedName("thumbnail")
     val thumbPic: String,
     @SerializedName("preview")
