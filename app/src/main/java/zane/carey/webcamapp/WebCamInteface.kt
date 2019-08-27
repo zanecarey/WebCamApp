@@ -14,7 +14,7 @@ interface WebCamInterface {
         "x-rapidapi-host: webcamstravel.p.rapidapi.com",
         "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage")
+    @GET("/webcams/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage&limit=20")
     fun getCamResults(
         @Path("areaType") areaType: String, @Path("region") region: String, @Path("category") category: String, @Path(
             "property"

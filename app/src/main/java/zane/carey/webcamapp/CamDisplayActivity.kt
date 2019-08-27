@@ -1,6 +1,5 @@
 package zane.carey.webcamapp
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -12,19 +11,28 @@ import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 import okhttp3.Dispatcher
 import android.net.http.SslError
+import android.view.View
 import android.webkit.SslErrorHandler
+import android.widget.RadioButton
+import androidx.appcompat.app.AppCompatActivity
 
 
 
 lateinit var camTitle: TextView
-lateinit var camPic: ImageView
+lateinit var currentPic: ImageView
+lateinit var daytimePic: ImageView
 lateinit var countryTextView: TextView
 lateinit var cityTextView: TextView
 lateinit var regionTextView: TextView
 lateinit var latitudeTextView: TextView
 lateinit var longitudeTextView: TextView
 lateinit var embedWebView: WebView
+lateinit var currentRadio: RadioButton
+lateinit var daylightRadio: RadioButton
+
 var embedLink = ""
+var previewLink = ""
+var daylightLink = ""
 
 class CamDisplayActivity : AppCompatActivity() {
 
@@ -33,13 +41,16 @@ class CamDisplayActivity : AppCompatActivity() {
         setContentView(R.layout.activity_cam_display)
 
         camTitle = findViewById(R.id.camTitle_textView)
-        camPic = findViewById(R.id.camPic)
+        currentPic = findViewById(R.id.currentPic)
+        daytimePic = findViewById(R.id.daytimePic)
         countryTextView = findViewById(R.id.countryTextView)
         cityTextView = findViewById(R.id.cityTextView)
         regionTextView = findViewById(R.id.regionTextView)
         latitudeTextView = findViewById(R.id.latitudeTextView)
         longitudeTextView = findViewById(R.id.longitudeTextView)
         embedWebView = findViewById(R.id.embedWebView)
+        currentRadio = findViewById(R.id.currentRadio)
+        daylightRadio = findViewById(R.id.daytimeRadio)
 
         embedWebView.settings.javaScriptEnabled = true
         embedWebView.settings.domStorageEnabled = true
@@ -50,11 +61,20 @@ class CamDisplayActivity : AppCompatActivity() {
 
         retreiveInfo(camID)
 
-        camPic.setOnClickListener {
+        currentPic.setOnClickListener {
             startCamFeed()
         }
 
+        //change pic based on radio button chosen
+        currentRadio.setOnClickListener{
+            daytimePic.visibility = View.GONE
+            currentPic.visibility = View.VISIBLE
+        }
 
+        daylightRadio.setOnClickListener{
+            currentPic.visibility = View.GONE
+            daytimePic.visibility = View.VISIBLE
+        }
     }
 
     fun getCamID(): String {
@@ -71,10 +91,16 @@ class CamDisplayActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 camTitle.text = response.title
+                previewLink = response.image.current.previewPic
+                daylightLink = response.image.daylight.previewPic
                 Glide.with(this@CamDisplayActivity)
                     .asBitmap()
-                    .load(response.image.current.previewPic)
-                    .into(camPic)
+                    .load(previewLink)
+                    .into(currentPic)
+                Glide.with(this@CamDisplayActivity)
+                    .asBitmap()
+                    .load(daylightLink)
+                    .into(daytimePic)
                 countryTextView.text = response.location.country
                 cityTextView.text = response.location.city
                 regionTextView.text = response.location.region
@@ -84,6 +110,7 @@ class CamDisplayActivity : AppCompatActivity() {
             }
         }
     }
+
 
     fun startCamFeed() {
 //        embedWebView!!.webViewClient = object : WebViewClient() {
@@ -109,4 +136,6 @@ class CamDisplayActivity : AppCompatActivity() {
             handler.proceed() // Ignore SSL certificate errors
         }
     }
+
+
 }
