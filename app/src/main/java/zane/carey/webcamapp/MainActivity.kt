@@ -35,6 +35,8 @@ var latitude: Double = 0.0
 var longitude: Double = 0.0
 var radius: Int = 50
 
+var numCams = 0
+
 private lateinit var adapter: RecyclerAdapter
 private lateinit var camRecyclerView: RecyclerView
 private lateinit var fab: FloatingActionButton
@@ -56,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 
 
             val searchCardView = findViewById(R.id.searchCardView) as CardView
+            val resetCardView = findViewById(R.id.resetCardView) as CardView
             camRecyclerView = findViewById(R.id.resultsRecyclerView) as RecyclerView
             val catSpinner = findViewById(R.id.categorySpinner) as Spinner
             val countrySpinner = findViewById(R.id.countrySpinner) as Spinner
@@ -63,6 +66,8 @@ class MainActivity : AppCompatActivity() {
 
             val livestreamSwitch = findViewById(R.id.livestreamSwitch) as Switch
             val hdSwitch = findViewById(R.id.hdSwitch) as Switch
+
+            val numCamsTextView = findViewById(R.id.numCamsTextView) as TextView
 
             fab = findViewById(R.id.floatingActionButton) as FloatingActionButton
 
@@ -256,7 +261,15 @@ class MainActivity : AppCompatActivity() {
                     property = "hd"
                 }
                 val regionCode = getRegionCode(regionChoice)
-                getInfo(regionCode, categoryChoice)
+                val catCode = getCategoryCode(categoryChoice)
+                getInfo(regionCode, catCode)
+            }
+
+            resetCardView.setOnClickListener{
+                numCams = 0
+                numCamsTextView.visibility = View.GONE
+                cams.clear()
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -272,6 +285,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
+                numCams = request.result.total
                 for (i in response.webcams.indices) {
                     cams.add(
                         WebCam(
@@ -282,7 +296,8 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 withContext(Dispatchers.Main) {
-
+                    numCamsTextView.visibility = View.VISIBLE
+                    numCamsTextView.text = numCams.toString() + " WebCams"
                     adapter = RecyclerAdapter(cams, this@MainActivity)
                     camRecyclerView.adapter = adapter
                     camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
@@ -373,27 +388,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val locationListener: LocationListener = object : LocationListener{
-        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        }
-
-        override fun onProviderEnabled(provider: String?) {
-        }
-
-        override fun onProviderDisabled(provider: String?) {
-        }
-
-        override fun onLocationChanged(location: Location?) {
-            latitude = location!!.latitude
-            longitude = location!!.longitude
-            Toast.makeText(
-                this@MainActivity,
-                latitude.toString() + longitude.toString(),
-                Toast.LENGTH_SHORT
-            ).show()
+    fun getCategoryCode(category: String) : String {
+        when(category) {
+            "Golf Course" -> return "golf"
+            "Lake/River" -> return "lake"
+            "Mountain/Canyon" -> return "mountain"
+            "Sky" -> return "meteo"
+            "Sports Area" -> return "sportarea"
+            "Street/Traffic" -> return "traffic"
+            else -> return category
         }
     }
-
     private fun obtainLocation() {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->

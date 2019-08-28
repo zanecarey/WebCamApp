@@ -39,16 +39,24 @@ interface GPSInterface {
         "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
     @GET("/webcams/list/nearby={latitude}%2C{longitude}%2C{radius}?lang=en&show=webcams%3Aimage")
-    fun getNearbyCams(@Path("latitude") latitude: Double, @Path("longitude") longitude: Double, @Path("radius") radius: Int): Deferred<Result>
+    fun getNearbyCams(
+        @Path("latitude") latitude: Double, @Path("longitude") longitude: Double, @Path(
+            "radius"
+        ) radius: Int
+    ): Deferred<Result>
 }
+
 data class Result(
     @SerializedName("result")
     val result: WebCams
-)
+
+    )
 
 data class WebCams(
     @SerializedName("webcams")
-    val webcams: List<WebCamInfo>
+    val webcams: List<WebCamInfo>,
+    @SerializedName("total")
+    val total: Int
 )
 
 data class WebCamInfo(
