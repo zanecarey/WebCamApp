@@ -8,10 +8,15 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.core.app.ActivityCompat
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +29,7 @@ import kotlinx.coroutines.*
 
 val api = RestApi()
 
-var areaType = "region"
+var areaType = "country"
 var categoryChoice = "Beach"
 var countryChoice = "CA"
 var regionChoice = "AU.04"
@@ -40,8 +45,17 @@ var numCams = 0
 private lateinit var adapter: RecyclerAdapter
 private lateinit var camRecyclerView: RecyclerView
 private lateinit var fab: FloatingActionButton
-
+private lateinit var titleView: CardView
 private lateinit var fusedLocationClient: FusedLocationProviderClient
+private lateinit var hideCard: CardView
+
+private lateinit var animationUp: Animation
+private lateinit var animationDown: Animation
+
+private lateinit var animation: LayoutAnimationController
+
+private var hideButtonFlag = true
+
 class MainActivity : AppCompatActivity() {
 
 
@@ -52,11 +66,20 @@ class MainActivity : AppCompatActivity() {
         val context = this
         val res: Resources = resources
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
         } else {
 
-
+            titleView = findViewById(R.id.titleCardView) as CardView
+            hideCard = findViewById(R.id.hideCardView) as CardView
             val searchCardView = findViewById(R.id.searchCardView) as CardView
             val resetCardView = findViewById(R.id.resetCardView) as CardView
             camRecyclerView = findViewById(R.id.resultsRecyclerView) as RecyclerView
@@ -66,6 +89,7 @@ class MainActivity : AppCompatActivity() {
 
             val livestreamSwitch = findViewById(R.id.livestreamSwitch) as Switch
             val hdSwitch = findViewById(R.id.hdSwitch) as Switch
+            val subregionSwitch = findViewById(R.id.subregionSwitch) as Switch
 
             val numCamsTextView = findViewById(R.id.numCamsTextView) as TextView
 
@@ -73,6 +97,12 @@ class MainActivity : AppCompatActivity() {
 
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             obtainLocation()
+
+            animationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up)
+            animationUp.duration = 200
+            animationDown = AnimationUtils.loadAnimation(this, R.anim.slide_down)
+            animationDown.duration = 200
+            animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down)
 
             fab.setOnClickListener {
                 try {
@@ -83,37 +113,55 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    //get cams
-                    val job = CoroutineScope(Dispatchers.Main).launch {
-                        val request = api.getNearbyCams(latitude, longitude, radius).await()
-                        val response = request.result
+                    //launch alert to get radius
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Find cams within a certain distance to your location")
 
-                        if (response.webcams.isEmpty()) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "No results using these filters",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            for (i in response.webcams.indices) {
-                                cams.add(
-                                    WebCam(
-                                        response.webcams[i].id,
-                                        response.webcams[i].title,
-                                        response.webcams[i].image.current.thumbPic
+                    val numberPicker = NumberPicker(this)
+                    numberPicker.minValue = 1
+                    numberPicker.maxValue = 100
+                    builder.setView(numberPicker)
+
+                    builder.setPositiveButton("Ok") { dialog, which ->
+
+                        val radiusVal = numberPicker.value
+
+
+                        //get cams
+                        val job = CoroutineScope(Dispatchers.Main).launch {
+                            val request = api.getNearbyCams(latitude, longitude, radiusVal).await()
+                            val response = request.result
+
+                            if (response.webcams.isEmpty()) {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "No results using these filters",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                for (i in response.webcams.indices) {
+                                    cams.add(
+                                        WebCam(
+                                            response.webcams[i].id,
+                                            response.webcams[i].title,
+                                            response.webcams[i].image.current.thumbPic
+                                        )
                                     )
-                                )
-                            }
-                            withContext(Dispatchers.Main) {
+                                }
+                                withContext(Dispatchers.Main) {
 
-                                adapter = RecyclerAdapter(cams, this@MainActivity)
-                                camRecyclerView.adapter = adapter
-                                camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                                    adapter = RecyclerAdapter(cams, this@MainActivity)
+                                    camRecyclerView.adapter = adapter
+                                    camRecyclerView.layoutManager =
+                                        LinearLayoutManager(this@MainActivity)
+                                }
                             }
                         }
                     }
-                } catch (ex: SecurityException) {
+                    val dialog = builder.create()
+                    dialog.show()
 
+                } catch (ex: SecurityException) {
                 }
             }
 
@@ -260,16 +308,40 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     property = "hd"
                 }
-                val regionCode = getRegionCode(regionChoice)
+
+                var regionCode = ""
+
+                if (subregionSwitch.isChecked) {
+                    regionCode = getRegionCode(regionChoice)
+
+                } else {
+                    regionCode = getRegionCode(regionChoice).substring(0, 2)
+                }
                 val catCode = getCategoryCode(categoryChoice)
                 getInfo(regionCode, catCode)
             }
 
-            resetCardView.setOnClickListener{
+            resetCardView.setOnClickListener {
                 numCams = 0
                 numCamsTextView.visibility = View.GONE
                 cams.clear()
                 adapter.notifyDataSetChanged()
+            }
+
+
+            //subregion Switch Listener
+            subregionSwitch.setOnClickListener {
+                if (subregionSwitch.isChecked) {
+                    regionSpinner.visibility = View.VISIBLE
+                    areaType = "region"
+                } else {
+                    regionSpinner.visibility = View.INVISIBLE
+                    areaType = "country"
+                }
+            }
+
+            hideCard.setOnClickListener{
+                hideFilters()
             }
         }
     }
@@ -300,12 +372,12 @@ class MainActivity : AppCompatActivity() {
                     numCamsTextView.text = numCams.toString() + " WebCams"
                     adapter = RecyclerAdapter(cams, this@MainActivity)
                     camRecyclerView.adapter = adapter
+                    camRecyclerView.layoutAnimation = animation
                     camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
                 }
             }
         }
     }
-
 
 
     fun getRegionCode(regionChoice: String): String {
@@ -388,8 +460,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getCategoryCode(category: String) : String {
-        when(category) {
+    fun getCategoryCode(category: String): String {
+        when (category) {
             "Golf Course" -> return "golf"
             "Lake/River" -> return "lake"
             "Mountain/Canyon" -> return "mountain"
@@ -399,10 +471,44 @@ class MainActivity : AppCompatActivity() {
             else -> return category
         }
     }
+
     private fun obtainLocation() {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 latitude = location!!.latitude
-                longitude = location!!.longitude}
+                longitude = location!!.longitude
+            }
+    }
+
+    private fun hideFilters() {
+        if(hideButtonFlag){
+            titleView.startAnimation(animationUp)
+            var timer = object: CountDownTimer(200, 16){
+                override fun onTick(millisUntilFinished: Long) {
+
+                }
+
+                override fun onFinish() {
+                    titleView.visibility = View.GONE
+                }
+            }
+            timer.start()
+
+            hideButtonFlag = false
+        } else {
+            titleView.startAnimation(animationDown)
+            var timer = object: CountDownTimer(200, 16){
+                override fun onTick(millisUntilFinished: Long) {
+
+                }
+
+                override fun onFinish() {
+                    titleView.visibility = View.VISIBLE
+                }
+            }
+            timer.start()
+
+            hideButtonFlag = true
+        }
     }
 }

@@ -15,7 +15,15 @@ import android.view.View
 import android.webkit.SslErrorHandler
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
-
+import zane.carey.webcamapp.cityTextView
+import zane.carey.webcamapp.countryTextView
+import zane.carey.webcamapp.currentPic
+import zane.carey.webcamapp.currentRadio
+import zane.carey.webcamapp.daytimePic
+import zane.carey.webcamapp.embedWebView
+import zane.carey.webcamapp.latitudeTextView
+import zane.carey.webcamapp.longitudeTextView
+import zane.carey.webcamapp.regionTextView
 
 
 lateinit var camTitle: TextView
@@ -29,6 +37,7 @@ lateinit var longitudeTextView: TextView
 lateinit var embedWebView: WebView
 lateinit var currentRadio: RadioButton
 lateinit var daylightRadio: RadioButton
+lateinit var viewCountTextView: TextView
 
 var embedLink = ""
 var previewLink = ""
@@ -51,6 +60,7 @@ class CamDisplayActivity : AppCompatActivity() {
         embedWebView = findViewById(R.id.embedWebView)
         currentRadio = findViewById(R.id.currentRadio)
         daylightRadio = findViewById(R.id.daytimeRadio)
+        viewCountTextView = findViewById(R.id.viewsTotalTextView)
 
         embedWebView.settings.javaScriptEnabled = true
         embedWebView.settings.domStorageEnabled = true
@@ -101,6 +111,7 @@ class CamDisplayActivity : AppCompatActivity() {
                     .asBitmap()
                     .load(daylightLink)
                     .into(daytimePic)
+                viewCountTextView.text = response.statistics.views.toString()
                 countryTextView.text = response.location.country
                 cityTextView.text = response.location.city
                 regionTextView.text = response.location.region
