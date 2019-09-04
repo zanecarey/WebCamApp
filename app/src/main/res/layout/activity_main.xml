@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:text="HD Quality"
                         android:layout_marginStart="12dp"
-                        android:switchPadding="4dp"/>
+                        android:switchPadding="12dp"/>
             </LinearLayout>
             <Switch
                     android:id="@+id/subregionSwitch"
@@ -69,7 +69,7 @@
                     android:textColor="#000"
                     android:text="Enable Subregions"
                     android:layout_marginStart="8dp"
-                    android:switchPadding="4dp"/>
+                    android:switchPadding="18dp"/>
 
         </LinearLayout>
 
@@ -83,7 +83,7 @@
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/searchCardView"
-                android:layout_width="120dp"
+                android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp">
@@ -100,7 +100,7 @@
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/resetCardView"
-                android:layout_width="120dp"
+                android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center">
 
@@ -116,7 +116,7 @@
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/hideCardView"
-                android:layout_width="120dp"
+                android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp">

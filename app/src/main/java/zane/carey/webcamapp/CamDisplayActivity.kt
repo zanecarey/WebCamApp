@@ -1,47 +1,43 @@
 package zane.carey.webcamapp
 
+import android.app.ActionBar
 import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 import okhttp3.Dispatcher
 import android.net.http.SslError
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.SslErrorHandler
-import android.widget.RadioButton
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import zane.carey.webcamapp.cityTextView
-import zane.carey.webcamapp.countryTextView
-import zane.carey.webcamapp.currentPic
-import zane.carey.webcamapp.currentRadio
-import zane.carey.webcamapp.daytimePic
-import zane.carey.webcamapp.embedWebView
-import zane.carey.webcamapp.latitudeTextView
-import zane.carey.webcamapp.longitudeTextView
-import zane.carey.webcamapp.regionTextView
+import androidx.cardview.widget.CardView
 
 
 lateinit var camTitle: TextView
 lateinit var currentPic: ImageView
+lateinit var fullScreenPic: ImageView
 lateinit var daytimePic: ImageView
 lateinit var countryTextView: TextView
 lateinit var cityTextView: TextView
 lateinit var regionTextView: TextView
 lateinit var latitudeTextView: TextView
 lateinit var longitudeTextView: TextView
-lateinit var embedWebView: WebView
 lateinit var currentRadio: RadioButton
 lateinit var daylightRadio: RadioButton
 lateinit var viewCountTextView: TextView
-
+lateinit var viewPageCardView: CardView
 var embedLink = ""
+var urlLink = ""
 var previewLink = ""
 var daylightLink = ""
+lateinit var myWebView: WebView
+lateinit var myImage: ImageView
 
 class CamDisplayActivity : AppCompatActivity() {
 
@@ -51,27 +47,27 @@ class CamDisplayActivity : AppCompatActivity() {
 
         camTitle = findViewById(R.id.camTitle_textView)
         currentPic = findViewById(R.id.currentPic)
+        fullScreenPic = findViewById(R.id.fullScreenImage)
         daytimePic = findViewById(R.id.daytimePic)
         countryTextView = findViewById(R.id.countryTextView)
         cityTextView = findViewById(R.id.cityTextView)
         regionTextView = findViewById(R.id.regionTextView)
         latitudeTextView = findViewById(R.id.latitudeTextView)
         longitudeTextView = findViewById(R.id.longitudeTextView)
-        embedWebView = findViewById(R.id.embedWebView)
         currentRadio = findViewById(R.id.currentRadio)
         daylightRadio = findViewById(R.id.daytimeRadio)
         viewCountTextView = findViewById(R.id.viewsTotalTextView)
+        viewPageCardView = findViewById(R.id.viewCardView)
+        myWebView = WebView(this)
+        //myImage = ImageView(this)
 
-        embedWebView.settings.javaScriptEnabled = true
-        embedWebView.settings.domStorageEnabled = true
-        embedWebView.settings.setAppCacheEnabled(true)
-        embedWebView.webViewClient = MyWebViewClient()
+
 
         val camID = getCamID()
 
         retreiveInfo(camID)
 
-        currentPic.setOnClickListener {
+        viewPageCardView.setOnClickListener {
             startCamFeed()
         }
 
@@ -109,6 +105,10 @@ class CamDisplayActivity : AppCompatActivity() {
                     .into(currentPic)
                 Glide.with(this@CamDisplayActivity)
                     .asBitmap()
+                    .load(previewLink)
+                    .into(fullScreenPic)
+                Glide.with(this@CamDisplayActivity)
+                    .asBitmap()
                     .load(daylightLink)
                     .into(daytimePic)
                 viewCountTextView.text = response.statistics.views.toString()
@@ -118,27 +118,39 @@ class CamDisplayActivity : AppCompatActivity() {
                 latitudeTextView.text = response.location.latitude.toString()
                 longitudeTextView.text = response.location.longitude.toString()
                 embedLink = response.player.live.embed
+                urlLink = response.url.current.mobileUrl
             }
         }
     }
 
 
     fun startCamFeed() {
-//        embedWebView!!.webViewClient = object : WebViewClient() {
-//            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-//                view?.loadUrl(url)
-//                return true
-//            }
-//        }
-        //embedWebView!!.loadUrl(embedLink)
-        embedWebView!!.loadUrl("https://www.lookr.com/lookout/1485691420#action-play-day")
+        //launch alert dialog with webview
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Cam Web Page")
+        builder.setPositiveButton("Ok") {dialog, which ->
+
+        }
+        //val myWebView = WebView(this)
+
+        myWebView.settings.javaScriptEnabled = true
+        myWebView.settings.domStorageEnabled = true
+        myWebView.settings.setAppCacheEnabled(true)
+        myWebView.webViewClient = MyWebViewClient()
+
+        myWebView!!.loadUrl(urlLink)
+
+        builder.setView(myWebView)
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private class MyWebViewClient : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
 
-            embedWebView.loadUrl(url)
+            myWebView.loadUrl(url)
             return true
 
         }

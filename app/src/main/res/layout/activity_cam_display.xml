@@ -8,17 +8,23 @@
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="#3F51B5"
             android:orientation="vertical"
             tools:context=".CamDisplayActivity">
 
+        <ImageView
+                android:id="@+id/fullScreenImage"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:visibility="visible">
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -87,8 +93,7 @@
                             android:layout_height="wrap_content"
                             android:padding="4dp"
                             android:textColor="#000"
-                            android:textSize="18sp"
-                            />
+                            android:textSize="18sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -114,7 +119,6 @@
                             android:textColor="#000"
                             android:textSize="18sp" />
                 </LinearLayout>
-
 
 
                 <LinearLayout
@@ -213,14 +217,27 @@
                             android:textSize="18sp" />
                 </LinearLayout>
 
+                <androidx.cardview.widget.CardView
+                        android:id="@+id/viewCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@color/colorPrimary">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="12dp"
+                            android:text="View Webpage"
+                            android:textAllCaps="true"
+                            android:textColor="#FFFFFF"
+                            android:textSize="36sp" />
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <WebView
-                android:id="@+id/embedWebView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
     </LinearLayout>
 
 </ScrollView>

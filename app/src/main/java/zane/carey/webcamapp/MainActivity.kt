@@ -42,6 +42,8 @@ var radius: Int = 50
 
 var numCams = 0
 
+var recyclerStarted = false
+
 private lateinit var adapter: RecyclerAdapter
 private lateinit var camRecyclerView: RecyclerView
 private lateinit var fab: FloatingActionButton
@@ -322,10 +324,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             resetCardView.setOnClickListener {
-                numCams = 0
-                numCamsTextView.visibility = View.GONE
-                cams.clear()
-                adapter.notifyDataSetChanged()
+                if(recyclerStarted){
+
+                    numCams = 0
+                    numCamsTextView.visibility = View.GONE
+                    cams.clear()
+                    adapter.notifyDataSetChanged()
+                }
             }
 
 
@@ -374,6 +379,7 @@ class MainActivity : AppCompatActivity() {
                     camRecyclerView.adapter = adapter
                     camRecyclerView.layoutAnimation = animation
                     camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                    recyclerStarted = true
                 }
             }
         }

@@ -14,7 +14,7 @@ interface WebCamInterface {
         "x-rapidapi-host: webcamstravel.p.rapidapi.com",
         "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage&limit=20")
+    @GET("/webcams/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage&limit=30")
     fun getCamResults(
         @Path("areaType") areaType: String, @Path("region") region: String, @Path("category") category: String, @Path(
             "property"
@@ -28,7 +28,7 @@ interface CamIDInterface {
         "x-rapidapi-host: webcamstravel.p.rapidapi.com",
         "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer%2Cstatistics")
+    @GET("/webcams/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer%2Cstatistics%2Curl")
     fun getCamWithID(@Path("webcamID") webcamID: String): Deferred<Result>
 }
 
@@ -70,6 +70,8 @@ data class WebCamInfo(
     val location: Location,
     @SerializedName("player")
     val player: Player,
+    @SerializedName("url")
+    val url: Url,
     @SerializedName("statistics")
     val statistics: Stats
 )
@@ -120,4 +122,14 @@ data class Player(
 data class Live(
     @SerializedName("embed")
     val embed: String
+)
+
+data class Url(
+    @SerializedName("current")
+    val current: CurrentUrl
+)
+
+data class CurrentUrl(
+    @SerializedName("mobile")
+    val mobileUrl: String
 )
