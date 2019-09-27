@@ -50,7 +50,7 @@ private lateinit var fab: FloatingActionButton
 private lateinit var titleView: CardView
 private lateinit var fusedLocationClient: FusedLocationProviderClient
 private lateinit var hideCard: CardView
-
+private lateinit var hideTV: TextView
 private lateinit var animationUp: Animation
 private lateinit var animationDown: Animation
 
@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
 
             titleView = findViewById(R.id.titleCardView) as CardView
             hideCard = findViewById(R.id.hideCardView) as CardView
+            hideTV = findViewById(R.id.hideTextView) as TextView
             val searchCardView = findViewById(R.id.searchCardView) as CardView
             val resetCardView = findViewById(R.id.resetCardView) as CardView
             camRecyclerView = findViewById(R.id.resultsRecyclerView) as RecyclerView
@@ -109,12 +110,6 @@ class MainActivity : AppCompatActivity() {
             fab.setOnClickListener {
                 try {
                     obtainLocation()
-                    Toast.makeText(
-                        this@MainActivity,
-                        latitude.toString() + longitude.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
                     //launch alert to get radius
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle("Find cams within a certain distance to your location")
@@ -500,6 +495,7 @@ class MainActivity : AppCompatActivity() {
             }
             timer.start()
 
+            hideTV.text = "Show"
             hideButtonFlag = false
         } else {
             titleView.startAnimation(animationDown)
@@ -514,6 +510,7 @@ class MainActivity : AppCompatActivity() {
             }
             timer.start()
 
+            hideTV.text = "Hide"
             hideButtonFlag = true
         }
     }
