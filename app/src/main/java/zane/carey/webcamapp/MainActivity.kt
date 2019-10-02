@@ -30,7 +30,7 @@ import kotlinx.coroutines.*
 val api = RestApi()
 
 var areaType = "country"
-var categoryChoice = "Beach"
+var categoryChoice = "Category"
 var countryChoice = "CA"
 var regionChoice = "AU.04"
 var property = "hd"
@@ -302,8 +302,6 @@ class MainActivity : AppCompatActivity() {
             searchCardView.setOnClickListener {
                 if (livestreamSwitch.isChecked) {
                     property = "live"
-                } else {
-                    property = "hd"
                 }
 
                 var regionCode = ""
@@ -314,8 +312,13 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     regionCode = getRegionCode(regionChoice).substring(0, 2)
                 }
-                val catCode = getCategoryCode(categoryChoice)
-                getInfo(regionCode, catCode)
+                if(categoryChoice == "Category"){
+                    getInfo(regionCode, "Category")
+                } else if (countryChoice == "Country"){
+                    getInfo("Country", getCategoryCode(categoryChoice))
+                } else {
+                    getInfo(regionCode, getCategoryCode(categoryChoice))
+                }
             }
 
             resetCardView.setOnClickListener {
@@ -348,7 +351,14 @@ class MainActivity : AppCompatActivity() {
 
     fun getInfo(region: String, category: String) = runBlocking<Unit> {
         val job = CoroutineScope(Dispatchers.Main).launch {
-            val request = api.getCams(areaType, region, category, property).await()
+            val request: Result
+            if(category == "Category"){
+                request = api.getCamsNoCat(areaType, region, property).await()
+            } else if (region == "Country"){
+                request = api.getCamsNoCountry(category, property).await()
+            } else {
+                request = api.getCams(areaType, region, category, property).await()
+            }
             val response = request.result
             if (response.webcams.isEmpty()) {
                 Toast.makeText(

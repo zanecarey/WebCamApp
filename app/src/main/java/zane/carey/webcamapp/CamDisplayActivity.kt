@@ -159,6 +159,4 @@ class CamDisplayActivity : AppCompatActivity() {
             handler.proceed() // Ignore SSL certificate errors
         }
     }
-
-
 }

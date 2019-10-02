@@ -3,6 +3,7 @@
     <string name="app_name">WebCamApp</string>
 
     <string-array name="categories">
+        <item>Category</item>
         <item>Airport</item>
         <item>Area</item>
         <item>Bay</item>
@@ -33,6 +34,7 @@
     </string-array>
 
     <string-array name="countries_list">
+        <item>Country</item>
         <item>Australia</item>
         <item>Austria</item>
         <item>Canada</item>

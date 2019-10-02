@@ -62,14 +62,15 @@
                         android:layout_marginStart="12dp"
                         android:switchPadding="12dp"/>
             </LinearLayout>
+
             <Switch
                     android:id="@+id/subregionSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#000"
-                    android:text="Enable Subregions"
                     android:layout_marginStart="8dp"
-                    android:switchPadding="18dp"/>
+                    android:switchPadding="17dp"
+                    android:text="Enable Subregions"
+                    android:textColor="#000" />
 
         </LinearLayout>
 

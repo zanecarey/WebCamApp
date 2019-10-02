@@ -22,6 +22,32 @@ interface WebCamInterface {
     ): Deferred<Result>
 }
 
+interface WebCamInterfaceNoCategory {
+
+    @Headers(
+        "Content-Type: application/json",
+        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
+        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+    )
+    @GET("/webcams/list/{areaType}%3D{region}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage&limit=30")
+    fun getCamResultsNoCat(
+        @Path("areaType") areaType: String, @Path("region") region: String, @Path("property") property: String
+    ): Deferred<Result>
+}
+
+interface WebCamInterfaceNoCountry {
+
+    @Headers(
+        "Content-Type: application/json",
+        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
+        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+    )
+    @GET("/webcams/list/category%3D{category}%2Fproperty%3D{property}?lang=en&show=webcams%3Aimage&limit=30")
+    fun getCamResultsNoCountry(
+        @Path("category") category: String, @Path("property") property: String
+    ): Deferred<Result>
+}
+
 interface CamIDInterface {
     @Headers(
         "Content-Type: application/json",
