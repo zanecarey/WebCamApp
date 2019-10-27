@@ -368,6 +368,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             } else {
                 numCams = request.result.total
+                var size = response.webcams.size
                 for (i in response.webcams.indices) {
                     cams.add(
                         WebCam(
