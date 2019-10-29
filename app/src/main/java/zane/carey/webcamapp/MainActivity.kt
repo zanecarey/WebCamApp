@@ -42,6 +42,8 @@ var radius: Int = 50
 
 var numCams = 0
 
+var offset = 0
+
 var recyclerStarted = false
 
 private lateinit var adapter: RecyclerAdapter
@@ -312,9 +314,9 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     regionCode = getRegionCode(regionChoice).substring(0, 2)
                 }
-                if(categoryChoice == "Category"){
+                if (categoryChoice == "Category") {
                     getInfo(regionCode, "Category")
-                } else if (countryChoice == "Country"){
+                } else if (countryChoice == "Country") {
                     getInfo("Country", getCategoryCode(categoryChoice))
                 } else {
                     getInfo(regionCode, getCategoryCode(categoryChoice))
@@ -322,8 +324,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             resetCardView.setOnClickListener {
-                if(recyclerStarted){
-
+                if (recyclerStarted) {
+                    offset = 0
                     numCams = 0
                     numCamsTextView.visibility = View.GONE
                     cams.clear()
@@ -343,7 +345,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            hideCard.setOnClickListener{
+            hideCard.setOnClickListener {
                 hideFilters()
             }
         }
@@ -352,12 +354,16 @@ class MainActivity : AppCompatActivity() {
     fun getInfo(region: String, category: String) = runBlocking<Unit> {
         val job = CoroutineScope(Dispatchers.Main).launch {
             val request: Result
-            if(category == "Category"){
-                request = api.getCamsNoCat(areaType, region, property).await()
-            } else if (region == "Country"){
-                request = api.getCamsNoCountry(category, property).await()
+            var requestType = "noCat"
+            if (category == "Category") {
+                request = api.getCamsNoCat(areaType, region, property, offset).await()
+            } else if (region == "Country") {
+                request = api.getCamsNoCountry(category, property, offset).await()
+                requestType = "noCountry"
             } else {
-                request = api.getCams(areaType, region, category, property).await()
+                request = api.getCams(areaType, region, category, property, offset).await()
+                requestType = "allCams"
+
             }
             val response = request.result
             if (response.webcams.isEmpty()) {
@@ -368,7 +374,6 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             } else {
                 numCams = request.result.total
-                var size = response.webcams.size
                 for (i in response.webcams.indices) {
                     cams.add(
                         WebCam(
@@ -385,6 +390,48 @@ class MainActivity : AppCompatActivity() {
                     camRecyclerView.adapter = adapter
                     camRecyclerView.layoutAnimation = animation
                     camRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                    camRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                        override fun onScrollStateChanged(
+                            recyclerView: RecyclerView,
+                            newState: Int
+                        ) {
+                            super.onScrollStateChanged(recyclerView, newState)
+
+                            if (!recyclerView.canScrollVertically(1)) {
+
+                                if (numCams > 50) {
+                                    val job = CoroutineScope(Dispatchers.Main).launch {
+                                        //get more of list
+
+                                        offset += 50
+                                        val req: Result
+                                        if (requestType == "noCat") {
+                                            req = api.getCamsNoCat(areaType, region, property, offset).await()
+
+                                        } else if (requestType == "noCountry") {
+                                            req= api.getCamsNoCountry(category, property, offset).await()
+                                        } else {
+                                            req= api.getCams(areaType, region, category, property, offset).await()
+                                        }
+                                        val resp = req.result
+                                        val respSize = resp.total
+                                        for (i in resp.webcams.indices) {
+                                            cams.add(
+                                                WebCam(
+                                                    response.webcams[i].id,
+                                                    response.webcams[i].title,
+                                                    response.webcams[i].image.current.thumbPic
+                                                )
+                                            )
+                                        }
+                                        adapter.notifyItemRangeInserted(cams.size-1, respSize)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    )
                     recyclerStarted = true
                 }
             }
@@ -493,9 +540,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideFilters() {
-        if(hideButtonFlag){
+        if (hideButtonFlag) {
             titleView.startAnimation(animationUp)
-            var timer = object: CountDownTimer(200, 16){
+            var timer = object : CountDownTimer(200, 16) {
                 override fun onTick(millisUntilFinished: Long) {
 
                 }
@@ -510,7 +557,7 @@ class MainActivity : AppCompatActivity() {
             hideButtonFlag = false
         } else {
             titleView.startAnimation(animationDown)
-            var timer = object: CountDownTimer(200, 16){
+            var timer = object : CountDownTimer(200, 16) {
                 override fun onTick(millisUntilFinished: Long) {
 
                 }

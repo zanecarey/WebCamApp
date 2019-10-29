@@ -26,16 +26,16 @@ class RestApi {
         gpsApi = retrofit.create(GPSInterface::class.java)
     }
 
-    fun getCams(areaType: String, region: String, category: String, property: String) : Deferred<Result> {
-        return camApi.getCamResults(areaType, region, category, property)
+    fun getCams(areaType: String, region: String, category: String, property: String, offset: Int) : Deferred<Result> {
+        return camApi.getCamResults(areaType, region, category, property, offset)
     }
 
-    fun getCamsNoCat(areaType: String, region: String, property: String) : Deferred<Result> {
-        return camApiNoCat.getCamResultsNoCat(areaType, region, property)
+    fun getCamsNoCat(areaType: String, region: String, property: String, offset: Int) : Deferred<Result> {
+        return camApiNoCat.getCamResultsNoCat(areaType, region, property, offset)
     }
 
-    fun getCamsNoCountry(category: String, property: String) : Deferred<Result> {
-        return camApiNoCountry.getCamResultsNoCountry(category, property)
+    fun getCamsNoCountry(category: String, property: String, offset: Int) : Deferred<Result> {
+        return camApiNoCountry.getCamResultsNoCountry(category, property, offset)
     }
 
     fun getCamInfo(webcamID: String): Deferred<Result> {
