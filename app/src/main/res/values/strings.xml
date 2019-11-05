@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WebCamApp</string>
+    <string name="livestream_available">Livestream Available</string>
+    <string name="enable_subregions">Enable Subregions</string>
+    <string name="webcam_browser">Webcam Browser</string>
+    <string name="search">Search</string>
+    <string name="reset">Reset</string>
+    <string name="hide">Hide</string>
+    <string name="webcams"># Webcams</string>
 
     <string-array name="categories">
         <item>Category</item>

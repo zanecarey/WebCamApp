@@ -93,7 +93,6 @@ class MainActivity : AppCompatActivity() {
             val regionSpinner = findViewById(R.id.regionSpinner) as Spinner
 
             val livestreamSwitch = findViewById(R.id.livestreamSwitch) as Switch
-            val hdSwitch = findViewById(R.id.hdSwitch) as Switch
             val subregionSwitch = findViewById(R.id.subregionSwitch) as Switch
 
             val numCamsTextView = findViewById(R.id.numCamsTextView) as TextView

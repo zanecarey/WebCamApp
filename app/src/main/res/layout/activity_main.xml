@@ -4,9 +4,9 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#3F51B5"
         android:orientation="vertical"
-        tools:context=".MainActivity"
-        android:background="#3F51B5">
+        tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
             android:id="@+id/titleCardView"
@@ -23,9 +23,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Webcam Browser"
+                    android:text="@string/webcam_browser"
                     android:textColor="#000"
-                    android:textSize="36sp" />
+                    android:textSize="42sp" />
 
             <Spinner
                     android:id="@+id/categorySpinner"
@@ -41,27 +41,15 @@
                     android:id="@+id/regionSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible" />
 
-            <LinearLayout
-                    android:layout_width="match_parent"
+            <Switch
+                    android:id="@+id/livestreamSwitch"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <Switch
-                        android:id="@+id/livestreamSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Livestream Available"
-                        android:layout_marginStart="8dp"
-                        android:switchPadding="4dp"/>
-                <Switch
-                        android:id="@+id/hdSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HD Quality"
-                        android:layout_marginStart="12dp"
-                        android:switchPadding="12dp"/>
-            </LinearLayout>
+                    android:layout_marginStart="8dp"
+                    android:switchPadding="4dp"
+                    android:text="@string/livestream_available" />
 
             <Switch
                     android:id="@+id/subregionSwitch"
@@ -69,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:switchPadding="17dp"
-                    android:text="Enable Subregions"
+                    android:text="@string/enable_subregions"
                     android:textColor="#000" />
 
         </LinearLayout>
@@ -79,8 +67,8 @@
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/searchCardView"
@@ -94,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Search"
+                    android:text="@string/search"
                     android:textColor="#000"
                     android:textSize="24sp" />
         </androidx.cardview.widget.CardView>
@@ -110,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Reset"
+                    android:text="@string/reset"
                     android:textColor="#000"
                     android:textSize="24sp" />
         </androidx.cardview.widget.CardView>
@@ -127,12 +115,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Hide"
+                    android:text="@string/hide"
                     android:textColor="#000"
                     android:textSize="24sp" />
         </androidx.cardview.widget.CardView>
-</LinearLayout>
-
+    </LinearLayout>
 
 
     <androidx.cardview.widget.CardView
@@ -150,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="# Webcams"
+                    android:text="@string/webcams"
                     android:textAllCaps="false"
                     android:textColor="#000"
                     android:textSize="18sp"
@@ -165,7 +152,6 @@
 
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
-
 
 
     </androidx.cardview.widget.CardView>
