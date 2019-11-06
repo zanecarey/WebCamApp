@@ -52,7 +52,7 @@ private lateinit var fab: FloatingActionButton
 private lateinit var titleView: CardView
 private lateinit var fusedLocationClient: FusedLocationProviderClient
 private lateinit var hideCard: CardView
-private lateinit var hideTV: TextView
+private lateinit var hideIV: ImageView
 private lateinit var animationUp: Animation
 private lateinit var animationDown: Animation
 
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
             titleView = findViewById(R.id.titleCardView) as CardView
             hideCard = findViewById(R.id.hideCardView) as CardView
-            hideTV = findViewById(R.id.hideTextView) as TextView
+            hideIV = findViewById(R.id.hideImageView) as ImageView
             val searchCardView = findViewById(R.id.searchCardView) as CardView
             val resetCardView = findViewById(R.id.resetCardView) as CardView
             camRecyclerView = findViewById(R.id.resultsRecyclerView) as RecyclerView
@@ -346,6 +346,7 @@ class MainActivity : AppCompatActivity() {
 
             hideCard.setOnClickListener {
                 hideFilters()
+
             }
         }
     }
@@ -552,7 +553,7 @@ class MainActivity : AppCompatActivity() {
             }
             timer.start()
 
-            hideTV.text = "Show"
+            hideIV.setImageResource(R.drawable.ic_keyboard_arrow_down_white_24dp)
             hideButtonFlag = false
         } else {
             titleView.startAnimation(animationDown)
@@ -567,7 +568,7 @@ class MainActivity : AppCompatActivity() {
             }
             timer.start()
 
-            hideTV.text = "Hide"
+            hideIV.setImageResource(R.drawable.ic_keyboard_arrow_up_white_24dp)
             hideButtonFlag = true
         }
     }
