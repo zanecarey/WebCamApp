@@ -31,14 +31,13 @@ val api = RestApi()
 
 var areaType = "country"
 var categoryChoice = "Category"
-var countryChoice = "CA"
+var countryChoice = "Country"
 var regionChoice = "AU.04"
 var property = "hd"
 private var cams = ArrayList<WebCam>()
 
 var latitude: Double = 0.0
 var longitude: Double = 0.0
-var radius: Int = 50
 
 var numCams = 0
 
@@ -319,6 +318,9 @@ class MainActivity : AppCompatActivity() {
                     getInfo("Country", getCategoryCode(categoryChoice))
                 } else {
                     getInfo(regionCode, getCategoryCode(categoryChoice))
+                }
+                if(hideButtonFlag){
+                    hideFilters()
                 }
             }
 
