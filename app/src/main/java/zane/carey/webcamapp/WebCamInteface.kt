@@ -31,7 +31,9 @@ interface WebCamInterfaceNoCategory {
     )
     @GET("/webcams/list/{areaType}%3D{region}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
     fun getCamResultsNoCat(
-        @Path("areaType") areaType: String, @Path("region") region: String, @Path("property") property: String, @Path("offset") offset: Int
+        @Path("areaType") areaType: String, @Path("region") region: String, @Path("property") property: String, @Path(
+            "offset"
+        ) offset: Int
     ): Deferred<Result>
 }
 
@@ -54,7 +56,7 @@ interface CamIDInterface {
         "x-rapidapi-host: webcamstravel.p.rapidapi.com",
         "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer%2Cstatistics%2Curl")
+    @GET("/webcams/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer%2Cstatistics%2Curl%2Cproperty")
     fun getCamWithID(@Path("webcamID") webcamID: String): Deferred<Result>
 }
 
@@ -99,7 +101,14 @@ data class WebCamInfo(
     @SerializedName("url")
     val url: Url,
     @SerializedName("statistics")
-    val statistics: Stats
+    val statistics: Stats,
+    @SerializedName("property")
+    val property: List<Property>
+)
+
+data class Property(
+    @SerializedName("id")
+    val propertyID: String
 )
 
 data class Stats(

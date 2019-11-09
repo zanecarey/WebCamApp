@@ -23,6 +23,7 @@ lateinit var camTitle: TextView
 lateinit var currentPic: ImageView
 lateinit var fullScreenPic: ImageView
 lateinit var daytimePic: ImageView
+lateinit var lsAvailable: TextView
 lateinit var countryTextView: TextView
 lateinit var cityTextView: TextView
 lateinit var regionTextView: TextView
@@ -58,6 +59,7 @@ class CamDisplayActivity : AppCompatActivity() {
         daylightRadio = findViewById(R.id.daytimeRadio)
         viewCountTextView = findViewById(R.id.viewsTotalTextView)
         viewPageCardView = findViewById(R.id.viewCardView)
+        lsAvailable = findViewById(R.id.availableResultTextView)
         myWebView = WebView(this)
         //myImage = ImageView(this)
 
@@ -99,6 +101,11 @@ class CamDisplayActivity : AppCompatActivity() {
                 camTitle.text = response.title
                 previewLink = response.image.current.previewPic
                 daylightLink = response.image.daylight.previewPic
+                if(response.property[0].propertyID == "live"){
+                    lsAvailable.text = "Yes"
+                } else {
+                    lsAvailable.text = "No"
+                }
                 Glide.with(this@CamDisplayActivity)
                     .asBitmap()
                     .load(previewLink)
@@ -131,7 +138,6 @@ class CamDisplayActivity : AppCompatActivity() {
         builder.setPositiveButton("Ok") {dialog, which ->
 
         }
-        //val myWebView = WebView(this)
 
         myWebView.settings.javaScriptEnabled = true
         myWebView.settings.domStorageEnabled = true
