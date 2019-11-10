@@ -8,6 +8,7 @@
     <string name="reset">Reset</string>
     <string name="hide">Hide</string>
     <string name="webcams"># Webcams</string>
+    <string name="title">Title</string>
 
     <string-array name="categories">
         <item>Category</item>

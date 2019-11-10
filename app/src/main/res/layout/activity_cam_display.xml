@@ -37,7 +37,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="#000"
-                        android:textSize="48sp" />
+                        android:textSize="36sp" />
 
                 <ImageView
                         android:id="@+id/currentPic"

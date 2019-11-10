@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                                         WebCam(
                                             response.webcams[i].id,
                                             response.webcams[i].title,
-                                            response.webcams[i].image.current.thumbPic
+                                            response.webcams[i].image.current.previewPic
                                         )
                                     )
                                 }
@@ -341,7 +341,7 @@ class MainActivity : AppCompatActivity() {
                     regionSpinner.visibility = View.VISIBLE
                     areaType = "region"
                 } else {
-                    regionSpinner.visibility = View.INVISIBLE
+                    regionSpinner.visibility = View.GONE
                     areaType = "country"
                 }
             }
@@ -381,7 +381,7 @@ class MainActivity : AppCompatActivity() {
                         WebCam(
                             response.webcams[i].id,
                             response.webcams[i].title,
-                            response.webcams[i].image.current.thumbPic
+                            response.webcams[i].image.current.previewPic
                         )
                     )
                 }
@@ -423,7 +423,7 @@ class MainActivity : AppCompatActivity() {
                                                 WebCam(
                                                     response.webcams[i].id,
                                                     response.webcams[i].title,
-                                                    response.webcams[i].image.current.thumbPic
+                                                    response.webcams[i].image.current.previewPic
                                                 )
                                             )
                                         }
