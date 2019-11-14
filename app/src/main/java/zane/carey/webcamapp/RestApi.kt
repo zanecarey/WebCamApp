@@ -9,6 +9,7 @@ class RestApi {
     private val camApi: WebCamInterface
     private val camApiNoCat: WebCamInterfaceNoCategory
     private val camApiNoCountry: WebCamInterfaceNoCountry
+    private val camApiNoCountryNoCategory: WebCamInterfaceNoCountryNoCategory
     private val idApi: CamIDInterface
     private val gpsApi: GPSInterface
 
@@ -22,6 +23,7 @@ class RestApi {
         camApi = retrofit.create(WebCamInterface::class.java)
         camApiNoCat = retrofit.create(WebCamInterfaceNoCategory::class.java)
         camApiNoCountry = retrofit.create(WebCamInterfaceNoCountry::class.java)
+        camApiNoCountryNoCategory = retrofit.create(WebCamInterfaceNoCountryNoCategory::class.java)
         idApi = retrofit.create(CamIDInterface::class.java)
         gpsApi = retrofit.create(GPSInterface::class.java)
     }
@@ -36,6 +38,10 @@ class RestApi {
 
     fun getCamsNoCountry(category: String, property: String, offset: Int) : Deferred<Result> {
         return camApiNoCountry.getCamResultsNoCountry(category, property, offset)
+    }
+
+    fun getCamsNoCountryNoCategory(property: String, offset: Int) : Deferred<Result> {
+        return camApiNoCountryNoCategory.getCamResultsNoCountry(property, offset)
     }
 
     fun getCamInfo(webcamID: String): Deferred<Result> {

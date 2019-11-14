@@ -306,20 +306,24 @@ class MainActivity : AppCompatActivity() {
 
                 var regionCode = ""
 
+
                 if (subregionSwitch.isChecked) {
                     regionCode = getRegionCode(regionChoice)
 
-                } else {
-                    regionCode = getRegionCode(regionChoice).substring(0, 2)
+                } else if (countryChoice != "Country") {
+                    regionCode = getCountryCode(countryChoice)
                 }
-                if (categoryChoice == "Category") {
+                if(countryChoice == "Country" && categoryChoice == "Category"){
+                    getInfo("Country", "Category")
+                } else if (categoryChoice == "Category") {
                     getInfo(regionCode, "Category")
                 } else if (countryChoice == "Country") {
                     getInfo("Country", getCategoryCode(categoryChoice))
                 } else {
                     getInfo(regionCode, getCategoryCode(categoryChoice))
                 }
-                if(hideButtonFlag){
+
+                if (hideButtonFlag) {
                     hideFilters()
                 }
             }
@@ -357,16 +361,19 @@ class MainActivity : AppCompatActivity() {
         val job = CoroutineScope(Dispatchers.Main).launch {
             val request: Result
             var requestType = "noCat"
-            if (category == "Category") {
-                request = api.getCamsNoCat(areaType, region, property, offset).await()
+            if (category == "Category" && region == "Country") {
+                request = api.getCamsNoCountryNoCategory(property, offset).await()
+                requestType = "noCountrynoCat"
             } else if (region == "Country") {
                 request = api.getCamsNoCountry(category, property, offset).await()
                 requestType = "noCountry"
+            } else if (category == "Category") {
+                request = api.getCamsNoCat(areaType, region, property, offset).await()
             } else {
                 request = api.getCams(areaType, region, category, property, offset).await()
                 requestType = "allCams"
-
             }
+
             val response = request.result
             if (response.webcams.isEmpty()) {
                 Toast.makeText(
@@ -409,12 +416,24 @@ class MainActivity : AppCompatActivity() {
                                         offset += 50
                                         val req: Result
                                         if (requestType == "noCat") {
-                                            req = api.getCamsNoCat(areaType, region, property, offset).await()
+                                            req =
+                                                api.getCamsNoCat(areaType, region, property, offset)
+                                                    .await()
 
                                         } else if (requestType == "noCountry") {
-                                            req= api.getCamsNoCountry(category, property, offset).await()
+                                            req = api.getCamsNoCountry(category, property, offset)
+                                                .await()
+                                        } else if (requestType == "noCountryNoCat") {
+                                            req = api.getCamsNoCountryNoCategory(property, offset)
+                                                .await()
                                         } else {
-                                            req= api.getCams(areaType, region, category, property, offset).await()
+                                            req = api.getCams(
+                                                areaType,
+                                                region,
+                                                category,
+                                                property,
+                                                offset
+                                            ).await()
                                         }
                                         val resp = req.result
                                         val respSize = resp.total
@@ -427,7 +446,7 @@ class MainActivity : AppCompatActivity() {
                                                 )
                                             )
                                         }
-                                        adapter.notifyItemRangeInserted(cams.size-1, respSize)
+                                        adapter.notifyItemRangeInserted(cams.size - 1, respSize)
                                     }
                                 }
                             }
@@ -440,7 +459,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    fun getCountryCode(countryChoice: String): String {
+        when (countryChoice) {
+            "Australia" -> return "AU"
+            "Canada" -> return "CA"
+            else -> return "US"
+        }
+    }
     fun getRegionCode(regionChoice: String): String {
         when (regionChoice) {
             //australia
