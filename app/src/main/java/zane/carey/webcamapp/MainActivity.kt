@@ -462,7 +462,15 @@ class MainActivity : AppCompatActivity() {
     fun getCountryCode(countryChoice: String): String {
         when (countryChoice) {
             "Australia" -> return "AU"
+            "Belarus" -> return "BY"
             "Canada" -> return "CA"
+            "Croatia" -> return "HR"
+            "Czechia" -> return "CZ"
+            "Greece" -> return "GR"
+            "Iceland" -> return "IS"
+            "Italy" -> return "IT"
+            "Norway" -> return "NO"
+            "Romania" -> return "RO"
             else -> return "US"
         }
     }
@@ -481,6 +489,8 @@ class MainActivity : AppCompatActivity() {
             "Tyrol" -> return "AT.07"
             "Voralberg" -> return "AT.08"
             "Vienna" -> return "AT.09"
+            //Belarus
+
             //canada
             "British Columbia" -> return "CA.02"
             "Nova Scotia" -> return "CA.07"
