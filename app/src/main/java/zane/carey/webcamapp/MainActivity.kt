@@ -275,6 +275,11 @@ class MainActivity : AppCompatActivity() {
                             android.R.layout.simple_spinner_dropdown_item,
                             resources.getStringArray(R.array.usaRegions)
                         )
+                        else -> regionSpinner.adapter = ArrayAdapter(
+                            this@MainActivity,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            resources.getStringArray(R.array.noRegion)
+                        )
                     }
                 }
             }
@@ -313,7 +318,7 @@ class MainActivity : AppCompatActivity() {
                 } else if (countryChoice != "Country") {
                     regionCode = getCountryCode(countryChoice)
                 }
-                if(countryChoice == "Country" && categoryChoice == "Category"){
+                if (countryChoice == "Country" && categoryChoice == "Category") {
                     getInfo("Country", "Category")
                 } else if (categoryChoice == "Category") {
                     getInfo(regionCode, "Category")
@@ -462,18 +467,32 @@ class MainActivity : AppCompatActivity() {
     fun getCountryCode(countryChoice: String): String {
         when (countryChoice) {
             "Australia" -> return "AU"
+            "Austria" -> return "AT"
             "Belarus" -> return "BY"
             "Canada" -> return "CA"
             "Croatia" -> return "HR"
             "Czechia" -> return "CZ"
+            "Finland" -> return "FI"
+            "France" -> return "FR"
+            "Germany" -> return "DE"
+            "Great Britain" -> return "GB"
             "Greece" -> return "GR"
             "Iceland" -> return "IS"
             "Italy" -> return "IT"
+            "Japan" -> return "JP"
+            "New Zealand" -> return "NZ"
             "Norway" -> return "NO"
+            "Poland" -> return "PL"
             "Romania" -> return "RO"
+            "Russia" -> return "RU"
+            "Spain" -> return "SP"
+            "Sweden" -> return "SE"
+            "Switzerland" -> return "CH"
+            "USA" -> return "US"
             else -> return "US"
         }
     }
+
     fun getRegionCode(regionChoice: String): String {
         when (regionChoice) {
             //australia
@@ -489,7 +508,6 @@ class MainActivity : AppCompatActivity() {
             "Tyrol" -> return "AT.07"
             "Voralberg" -> return "AT.08"
             "Vienna" -> return "AT.09"
-            //Belarus
 
             //canada
             "British Columbia" -> return "CA.02"

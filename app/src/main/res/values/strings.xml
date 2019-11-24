@@ -45,19 +45,31 @@
         <item>Country</item>
         <item>Australia</item>
         <item>Austria</item>
+        <item>Belarus</item>
         <item>Canada</item>
+        <item>Croatia</item>
+        <item>Czechia</item>
         <item>Finland</item>
         <item>France</item>
         <item>Germany</item>
         <item>Great Britain</item>
+        <item>Greece</item>
+        <item>Iceland</item>
+        <item>Italy</item>
         <item>Japan</item>
         <item>New Zealand</item>
+        <item>Norway</item>
         <item>Poland</item>
+        <item>Romania</item>
         <item>Russia</item>
         <item>Spain</item>
         <item>Sweden</item>
         <item>Switzerland</item>
         <item>USA</item>
+    </string-array>
+
+    <string-array name="noRegion">
+        <item>N/A</item>
     </string-array>
 
     <string-array name="australiaRegions">
