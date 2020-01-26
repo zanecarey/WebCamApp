@@ -40,6 +40,10 @@ var daylightLink = ""
 lateinit var myWebView: WebView
 lateinit var myImage: ImageView
 
+/*
+* CamDisplayActivity - This activity displays the webcam chosen by the user as well as
+* all the info about the webcam. A link to the webpage of the actual web cam is also provided
+*/
 class CamDisplayActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,12 +89,14 @@ class CamDisplayActivity : AppCompatActivity() {
         }
     }
 
+    //Get the camID from the intent that was presented from MainActivity
     fun getCamID(): String {
         if (getIntent().hasExtra("camID")) {
             return getIntent().getStringExtra("camID")
         } else return ""
     }
 
+    //Initiate call to get all the info on the webCam and display it for the user to see
     fun retreiveInfo(camID: String) = runBlocking<Unit> {
         val job = CoroutineScope(Dispatchers.Main).launch {
 
@@ -131,6 +137,7 @@ class CamDisplayActivity : AppCompatActivity() {
     }
 
 
+    //Launch a webView that will display the webpage of the webcam, sometimes providing a live feed
     fun startCamFeed() {
         //launch alert dialog with webview
         val builder = AlertDialog.Builder(this)

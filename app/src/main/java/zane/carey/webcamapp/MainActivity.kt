@@ -107,6 +107,11 @@ class MainActivity : AppCompatActivity() {
             animationDown.duration = 200
             animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down)
 
+            /*
+            * Onclick for the floating action button which lets the user input a distance in
+            * kilometers from their location using GPS. All webcams within that distance are then
+            * listed
+            */
             fab.setOnClickListener {
                 try {
                     obtainLocation()
@@ -333,6 +338,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            //Reset the recycler view which enables a new search
             resetCardView.setOnClickListener {
                 if (recyclerStarted) {
                     offset = 0
@@ -362,9 +368,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Initiate call to get all of the webcams using the selected filters
     fun getInfo(region: String, category: String) = runBlocking<Unit> {
         val job = CoroutineScope(Dispatchers.Main).launch {
             val request: Result
+
+            //Use the correct API call based on the selected region filter
             var requestType = "noCat"
             if (category == "Category" && region == "Country") {
                 request = api.getCamsNoCountryNoCategory(property, offset).await()
@@ -464,6 +473,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Function to translate the full country name into it's abbreviation
     fun getCountryCode(countryChoice: String): String {
         when (countryChoice) {
             "Australia" -> return "AU"
@@ -493,6 +503,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Translate full region name into its abbreviated region name
     fun getRegionCode(regionChoice: String): String {
         when (regionChoice) {
             //australia
@@ -574,6 +585,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Tranlsate full category name into correct database name
     fun getCategoryCode(category: String): String {
         when (category) {
             "Golf Course" -> return "golf"
@@ -586,6 +598,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Get the gps coordinates of your current location
     private fun obtainLocation() {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
@@ -594,6 +607,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    //Hide the filters using animations
     private fun hideFilters() {
         if (hideButtonFlag) {
             titleView.startAnimation(animationUp)
