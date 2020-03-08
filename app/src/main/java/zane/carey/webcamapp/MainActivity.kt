@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             fab = findViewById(R.id.floatingActionButton) as FloatingActionButton
 
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            obtainLocation()
+            //obtainLocation()
 
             animationUp = AnimationUtils.loadAnimation(this, R.anim.slide_up)
             animationUp.duration = 200
@@ -600,11 +600,28 @@ class MainActivity : AppCompatActivity() {
 
     //Get the gps coordinates of your current location
     private fun obtainLocation() {
+//        try{
+//            fusedLocationClient.lastLocation
+//                .addOnSuccessListener { location ->
+//                    if(location != null){
+//                        latitude = location!!.latitude
+//                        longitude = location.longitude
+//                    }
+//                }
+//        } catch(ex: KotlinNullPointerException){
+//            Toast.makeText(this,ex.message, Toast.LENGTH_LONG).show()
+//        }
+
         fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                latitude = location!!.latitude
-                longitude = location!!.longitude
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    latitude = location!!.latitude
+                    longitude = location.longitude
+                } else {
+                   Toast.makeText(this,"No Location detected!", Toast.LENGTH_LONG).show()
+                }
             }
+
     }
 
     //Hide the filters using animations
