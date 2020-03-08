@@ -114,54 +114,66 @@ class MainActivity : AppCompatActivity() {
             */
             fab.setOnClickListener {
                 try {
-                    obtainLocation()
-                    //launch alert to get radius
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle("Find cams within a certain distance to your location")
+                    //obtainLocation()
+                    fusedLocationClient.lastLocation
+                        .addOnSuccessListener { location ->
+                            if (location != null) {
+                                latitude = location!!.latitude
+                                longitude = location.longitude
 
-                    val numberPicker = NumberPicker(this)
-                    numberPicker.minValue = 1
-                    numberPicker.maxValue = 100
-                    builder.setView(numberPicker)
+                                //launch alert to get radius
+                                val builder = AlertDialog.Builder(this)
+                                builder.setTitle("Find cams within a certain distance to your location")
 
-                    builder.setPositiveButton("Ok") { dialog, which ->
+                                val numberPicker = NumberPicker(this)
+                                numberPicker.minValue = 1
+                                numberPicker.maxValue = 100
+                                builder.setView(numberPicker)
 
-                        val radiusVal = numberPicker.value
+                                builder.setPositiveButton("Ok") { dialog, which ->
+
+                                    val radiusVal = numberPicker.value
 
 
-                        //get cams
-                        val job = CoroutineScope(Dispatchers.Main).launch {
-                            val request = api.getNearbyCams(latitude, longitude, radiusVal).await()
-                            val response = request.result
+                                    //get cams
+                                    val job = CoroutineScope(Dispatchers.Main).launch {
+                                        val request = api.getNearbyCams(latitude, longitude, radiusVal).await()
+                                        val response = request.result
 
-                            if (response.webcams.isEmpty()) {
-                                Toast.makeText(
-                                    this@MainActivity,
-                                    "No results using these filters",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                        if (response.webcams.isEmpty()) {
+                                            Toast.makeText(
+                                                this@MainActivity,
+                                                "No results using these filters",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            for (i in response.webcams.indices) {
+                                                cams.add(
+                                                    WebCam(
+                                                        response.webcams[i].id,
+                                                        response.webcams[i].title,
+                                                        response.webcams[i].image.current.previewPic
+                                                    )
+                                                )
+                                            }
+                                            withContext(Dispatchers.Main) {
+
+                                                adapter = RecyclerAdapter(cams, this@MainActivity)
+                                                camRecyclerView.adapter = adapter
+                                                camRecyclerView.layoutManager =
+                                                    LinearLayoutManager(this@MainActivity)
+                                            }
+                                        }
+                                    }
+                                }
+                                val dialog = builder.create()
+                                dialog.show()
                             } else {
-                                for (i in response.webcams.indices) {
-                                    cams.add(
-                                        WebCam(
-                                            response.webcams[i].id,
-                                            response.webcams[i].title,
-                                            response.webcams[i].image.current.previewPic
-                                        )
-                                    )
-                                }
-                                withContext(Dispatchers.Main) {
-
-                                    adapter = RecyclerAdapter(cams, this@MainActivity)
-                                    camRecyclerView.adapter = adapter
-                                    camRecyclerView.layoutManager =
-                                        LinearLayoutManager(this@MainActivity)
-                                }
+                                Toast.makeText(this,"No Location detected!", Toast.LENGTH_LONG).show()
                             }
                         }
-                    }
-                    val dialog = builder.create()
-                    dialog.show()
+
+
 
                 } catch (ex: SecurityException) {
                 }
