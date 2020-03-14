@@ -11,10 +11,10 @@ interface WebCamInterface {
 
     @Headers(
         "Content-Type: application/json",
-        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
-        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+        "x-windy-key: W6vo9arrQW6oGhjCpFn8IlSaFw7VYoCx"
+        //"x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
+    @GET("api/webcams/v2/list/{areaType}%3D{region}%2Fcategory%3D{category}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
     fun getCamResults(
         @Path("areaType") areaType: String, @Path("region") region: String, @Path("category") category: String, @Path(
             "property"
@@ -26,10 +26,10 @@ interface WebCamInterfaceNoCategory {
 
     @Headers(
         "Content-Type: application/json",
-        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
-        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+        "x-windy-key: W6vo9arrQW6oGhjCpFn8IlSaFw7VYoCx"
+    //"x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/{areaType}%3D{region}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
+    @GET("api/webcams/v2/list/{areaType}%3D{region}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
     fun getCamResultsNoCat(
         @Path("areaType") areaType: String, @Path("region") region: String, @Path("property") property: String, @Path(
             "offset"
@@ -41,10 +41,10 @@ interface WebCamInterfaceNoCountry {
 
     @Headers(
         "Content-Type: application/json",
-        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
-        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+        "x-windy-key: W6vo9arrQW6oGhjCpFn8IlSaFw7VYoCx"
+    //"x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
     )
-    @GET("/webcams/list/category%3D{category}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
+    @GET("api/webcams/v2/list/category%3D{category}%2Fproperty%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
     fun getCamResultsNoCountry(
         @Path("category") category: String, @Path("property") property: String, @Path("offset") offset: Int
     ): Deferred<Result>
@@ -54,10 +54,9 @@ interface WebCamInterfaceNoCountryNoCategory {
 
     @Headers(
         "Content-Type: application/json",
-        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
-        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+        "x-windy-key: W6vo9arrQW6oGhjCpFn8IlSaFw7VYoCx"
     )
-    @GET("/webcams/list/property%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
+    @GET("api/webcams/v2/list/property%3D{property}%2Flimit%3D50%2C{offset}?lang=en&show=webcams%3Aimage")
     fun getCamResultsNoCountry(
         @Path("property") property: String, @Path("offset") offset: Int
     ): Deferred<Result>
@@ -66,20 +65,18 @@ interface WebCamInterfaceNoCountryNoCategory {
 interface CamIDInterface {
     @Headers(
         "Content-Type: application/json",
-        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
-        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+        "x-windy-key: W6vo9arrQW6oGhjCpFn8IlSaFw7VYoCx"
     )
-    @GET("/webcams/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer%2Cstatistics%2Curl%2Cproperty")
+    @GET("api/webcams/v2/list/webcam={webcamID}?lang=en&show=webcams%3Aimage%2Clocation%2Cplayer%2Cstatistics%2Curl%2Cproperty")
     fun getCamWithID(@Path("webcamID") webcamID: String): Deferred<Result>
 }
 
 interface GPSInterface {
     @Headers(
         "Content-Type: application/json",
-        "x-rapidapi-host: webcamstravel.p.rapidapi.com",
-        "x-rapidapi-key: 81e151a732msh48b22660c893e7ap19a45ajsn123eb65fd566"
+        "x-windy-key: W6vo9arrQW6oGhjCpFn8IlSaFw7VYoCx"
     )
-    @GET("/webcams/list/nearby={latitude}%2C{longitude}%2C{radius}?lang=en&show=webcams%3Aimage")
+    @GET("api/webcams/v2/list/nearby={latitude}%2C{longitude}%2C{radius}?lang=en&show=webcams%3Aimage")
     fun getNearbyCams(
         @Path("latitude") latitude: Double, @Path("longitude") longitude: Double, @Path(
             "radius"

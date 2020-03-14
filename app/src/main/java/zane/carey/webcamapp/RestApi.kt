@@ -15,7 +15,7 @@ class RestApi {
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://webcamstravel.p.rapidapi.com")
+            .baseUrl("https://api.windy.com")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
