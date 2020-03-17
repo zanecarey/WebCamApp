@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-                    categoryChoice = parent?.getItemAtPosition(position).toString()
+                    categoryChoice = parent?.getItemAtPosition(position).toString().toLowerCase()
                 }
             }
 
@@ -387,13 +387,13 @@ class MainActivity : AppCompatActivity() {
 
             //Use the correct API call based on the selected region filter
             var requestType = "noCat"
-            if (category == "Category" && region == "Country") {
+            if (category == "category" && region == "Country") {
                 request = api.getCamsNoCountryNoCategory(property, offset).await()
                 requestType = "noCountrynoCat"
             } else if (region == "Country") {
                 request = api.getCamsNoCountry(category, property, offset).await()
                 requestType = "noCountry"
-            } else if (category == "Category") {
+            } else if (category == "Category" || category == "category") {
                 request = api.getCamsNoCat(areaType, region, property, offset).await()
             } else {
                 request = api.getCams(areaType, region, category, property, offset).await()
@@ -600,40 +600,14 @@ class MainActivity : AppCompatActivity() {
     //Tranlsate full category name into correct database name
     fun getCategoryCode(category: String): String {
         when (category) {
-            "Golf Course" -> return "golf"
-            "Lake/River" -> return "lake"
-            "Mountain/Canyon" -> return "mountain"
-            "Sky" -> return "meteo"
-            "Sports Area" -> return "sportarea"
-            "Street/Traffic" -> return "traffic"
+            "golf course" -> return "golf"
+            "lake/river" -> return "lake"
+            "mountain/canyon" -> return "mountain"
+            "sky" -> return "meteo"
+            "sports area" -> return "sportarea"
+            "street/traffic" -> return "traffic"
             else -> return category
         }
-    }
-
-    //Get the gps coordinates of your current location
-    private fun obtainLocation() {
-//        try{
-//            fusedLocationClient.lastLocation
-//                .addOnSuccessListener { location ->
-//                    if(location != null){
-//                        latitude = location!!.latitude
-//                        longitude = location.longitude
-//                    }
-//                }
-//        } catch(ex: KotlinNullPointerException){
-//            Toast.makeText(this,ex.message, Toast.LENGTH_LONG).show()
-//        }
-
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                if (location != null) {
-                    latitude = location!!.latitude
-                    longitude = location.longitude
-                } else {
-                   Toast.makeText(this,"No Location detected!", Toast.LENGTH_LONG).show()
-                }
-            }
-
     }
 
     //Hide the filters using animations
